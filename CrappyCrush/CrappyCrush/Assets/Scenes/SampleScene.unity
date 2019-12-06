@@ -235,8 +235,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0491b7f74f4ad384e87c05c73e7d7776, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shapeObj: {fileID: 8671580843050838031, guid: a6a7c322156a37f439d419be3d9350a7,
+    type: 3}
   boardSize: {x: 5, y: 5}
   cellSize: {x: 1, y: 1}
+  firstCell: {x: 0, y: 0}
+  shapeList: []
 --- !u!65 &525698770
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -267,7 +271,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 4dd5c237ff930694685d96936396a49d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

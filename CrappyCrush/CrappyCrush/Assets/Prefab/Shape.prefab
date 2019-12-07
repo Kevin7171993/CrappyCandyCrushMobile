@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8671580843050838028}
   - component: {fileID: 8671580843050838029}
   - component: {fileID: 8671580843050838030}
+  - component: {fileID: 7304735074577505300}
   m_Layer: 0
   m_Name: Shape
   m_TagString: Untagged
@@ -93,6 +94,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mShape: 0
+  mBoard: {fileID: 0}
   gridPos: {x: 0, y: 0}
   Selected: 0
   currentSprite: {fileID: 0}
@@ -102,3 +104,21 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 03e90d9a99bb374429eeb6a8fa801b77, type: 3}
   - {fileID: 21300000, guid: 0fdf204fdf4225047b542dbbabab9cc5, type: 3}
   - {fileID: 21300000, guid: 182ea9d206037964bb4ff273746508e2, type: 3}
+  index: 0
+  up: {fileID: 0}
+  down: {fileID: 0}
+  left: {fileID: 0}
+  right: {fileID: 0}
+--- !u!65 &7304735074577505300
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8671580843050838031}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.28, y: 1.28, z: 0.2}
+  m_Center: {x: 0, y: 0, z: 0}

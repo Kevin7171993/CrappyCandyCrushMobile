@@ -9,6 +9,7 @@ public class Board : MonoBehaviour
     public Vector2 cellSize; //1x1
     public Vector2 firstCell;
     public GameObject[] shapeList;
+    public bool boardReady = false;
 
     public Vector2 TopLeft()
     {
@@ -35,8 +36,13 @@ public class Board : MonoBehaviour
             if(shapeList[i] == null)
             {
                 shapeList[i] = Instantiate(shapeObj);
-                shapeList[i].GetComponent<Shape>().SetShapePos(sx + ix, sy + iy);
-                shapeList[i].GetComponent<Shape>().UpdatePos();
+                Shape cShape = shapeList[i].GetComponent<Shape>();
+                
+                cShape.SetShapePos(sx + ix, sy + iy);
+                cShape.UpdatePos();
+                cShape.index = i;
+                cShape.mBoard = this;
+
                 if (ix >= (int)boardSize.x - 1)
                 {
                     ix = 0;
@@ -46,7 +52,7 @@ public class Board : MonoBehaviour
                 {
                     ix++;
                 }
-                if(iy <= BottomRight().y)
+                if(sy + iy < BottomRight().y)
                 {
                     break;
                 }
@@ -54,9 +60,10 @@ public class Board : MonoBehaviour
         }
     }
 
-    public void AddShape(Vector2 pos)
+    public void AddShape(int i)
     {
-        
+        //shapeList[i] = Instantiate(shapeObj);
+        //shapeList[i].GetComponent<Shape>().SetShapePos
 
     }
     /*
@@ -79,15 +86,54 @@ public class Board : MonoBehaviour
         transform.localScale = new Vector3(boardSize.x, boardSize.y);
         firstCell = TopLeft();
         shapeList = new GameObject[(int)(boardSize.x * boardSize.y)]; //Create an array of shapes based on board size
-        //shapeList[0] = Instantiate(shapeObj);
-        //shapeList[0].GetComponent<Shape>().SetShapePos((int)TopLeft().x, (int)TopLeft().y);
-        //shapeList[0].GetComponent<Shape>().UpdatePos();
+
         Populate();
+        //bool populated = false;
+        //while (!populated)
+        //{
+        //    Populate();
+        //    for (int i = 0; i < shapeList.Length; i++)
+        //    {
+        //        shapeList[i].GetComponent<Shape>().UpdateAdjacent();
+        //    }
+        //    for (int i = 0; i < shapeList.Length; i++)
+        //    {
+        //        shapeList[i].GetComponent<Shape>().Match3();
+        //    }
+        //    populated = true;
+        //    for (int i = 0; i < shapeList.Length; i++)
+        //    {
+        //        if(shapeList[i] == null)
+        //        {
+        //            populated = false;
+        //        }
+        //    }
+        //}
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if(!boardReady)
+        {
+            Populate();
+            boardReady = true;
+            for (int i = 0; i < shapeList.Length; i++)
+            {
+                shapeList[i].GetComponent<Shape>().UpdateAdjacent();
+            }
+            for (int i = 0; i < shapeList.Length; i++)
+            {
+                shapeList[i].GetComponent<Shape>().Match3();
+                Debug.Log("Generated Match3");
+            }
+            for (int i = 0; i < shapeList.Length; i++)
+            {
+                if(shapeList[i] == null)
+                {
+                    boardReady = false;
+                }
+            }
+        }
     }
 }

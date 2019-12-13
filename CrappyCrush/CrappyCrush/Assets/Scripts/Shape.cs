@@ -4,6 +4,7 @@ using UnityEngine;
 
 public enum Shapes
 {
+    none = -1,
     star,
     circle,
     square,
@@ -17,14 +18,25 @@ public class Shape : MonoBehaviour
     public Shapes mShape;
     public Board mBoard;
     public Vector2 gridPos;
+    public bool init_flag = false;
     public bool Selected = false;
     public Sprite currentSprite;
     public Sprite[] listSprite = new Sprite[(int)Shapes.count];
     public int index;
     public Shape up, down, left, right;
-    private SpriteRenderer sr;
+    public SpriteRenderer sr;
+    private float waitTime = 1.0f;
+    private float count = 0.0f;
+    public bool mEnabled = true;
+    public int r;
 
-
+    public void Disable()
+    {
+        mShape = Shapes.none;
+        currentSprite = null;
+        sr.sprite = currentSprite;
+        mEnabled = false;
+    }
     public void SetShapePos(int x, int y)
     {
         gridPos.x = x;
@@ -87,17 +99,80 @@ public class Shape : MonoBehaviour
         }
         if(vertical)
         {
-            Destroy(up.gameObject);
-            Destroy(down.gameObject);
+            up.GetComponent<Shape>().Disable();
+            down.GetComponent<Shape>().Disable();
+            //Destroy(up.gameObject);
+            //Destroy(down.gameObject);
         }
         if(horizontal)
         {
-            Destroy(left.gameObject);
-            Destroy(right.gameObject);
+            left.GetComponent<Shape>().Disable();
+            right.GetComponent<Shape>().Disable();
+            //Destroy(left.gameObject);
+            //Destroy(right.gameObject);
         }
         if(vertical || horizontal)
         {
-            Destroy(this.gameObject);
+            Disable();
+            //Destroy(this.gameObject);
+        }
+    }
+    public void Reroll()
+    {
+        r = Random.Range(0, (int)Shapes.count);
+        currentSprite = listSprite[r];
+        sr.sprite = currentSprite;
+        mShape = (Shapes)r;
+
+        UpdateAdjacent();
+
+        if ((up != null && down != null))
+        {
+            if (mShape == up.mShape && mShape == down.mShape) //check up and down
+            {
+                Reroll();
+            }
+        }
+        if ((left != null && right != null))
+        {
+            if (mShape == left.mShape && mShape == right.mShape)
+            {
+                Reroll();
+            }
+        }
+        mEnabled = true;
+    }
+    public void RerollCheck()
+    {
+        if (!init_flag && (up != null || down != null || left != null || right != null))
+        {
+            if ((up != null && down != null))
+            {
+                if (mShape == up.mShape && mShape == down.mShape) //check up and down
+                {
+                    Reroll();
+                    return;
+                }
+            }
+            if ((left != null && right != null))
+            {
+                if (mShape == left.mShape && mShape == right.mShape)
+                {
+                    Reroll();
+                    return;
+                }
+            }
+            init_flag = true;
+        }
+    }
+    public void CheckBelow()
+    {
+        if(down != null)
+        {
+            if(down.GetComponent<Shape>().mEnabled == false)
+            {
+                mBoard.Swap(this, down.GetComponent<Shape>());
+            }
         }
     }
     public void OnDestroy()
@@ -112,7 +187,7 @@ public class Shape : MonoBehaviour
     void Start()
     {
         sr = GetComponent<SpriteRenderer>();
-        int r = Random.Range(0, (int)Shapes.count);
+        r = Random.Range(0, (int)Shapes.count);
         currentSprite = listSprite[r];
         sr.sprite = currentSprite;
         mShape = (Shapes)r;
@@ -121,14 +196,60 @@ public class Shape : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (mBoard.boardReady)
+        if(Selected)
+        {
+            sr.color = Color.gray;
+        }
+        else
+        {
+            sr.color = Color.white;
+        }
+        if (mBoard.boardReady) //Game loop for when the board is ready
         {
             UpdateAdjacent();
+            CheckBelow();
             Match3();
+            if (mEnabled == false)
+            {
+                Disable();
+            }
+        }
+        else
+        {
+            while (count <= waitTime) //Reroll shapes when board is not ready
+            {
+                UpdateAdjacent();
+                RerollCheck();
+                count += 1 * Time.deltaTime;
+            }
         }
     }
 
     private void OnMouseDown()
     {
+        if (!Selected)
+        {
+            if (mBoard.select1 == null)
+            {
+                mBoard.select1 = this;
+                Selected = true;
+            }
+            else
+            {
+                if(mBoard.select1 != this)
+                {
+                    if(mBoard.select1 == this.up || mBoard.select1 == this.down || mBoard.select1 == this.left || mBoard.select1 == this.right)
+                    {
+                        mBoard.select2 = this;
+                        Selected = true;
+                    }
+                }
+            }
+        }
+        else
+        {
+            mBoard.select1 = null;
+            Selected = false;
+        }
     }
 }

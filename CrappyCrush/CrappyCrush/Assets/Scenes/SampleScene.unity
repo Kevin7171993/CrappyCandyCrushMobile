@@ -237,10 +237,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shapeObj: {fileID: 8671580843050838031, guid: a6a7c322156a37f439d419be3d9350a7,
     type: 3}
-  boardSize: {x: 5, y: 5}
+  boardSize: {x: 7, y: 7}
   cellSize: {x: 1, y: 1}
   firstCell: {x: 0, y: 0}
   shapeList: []
+  boardReady: 0
+  select1: {fileID: 0}
+  select2: {fileID: 0}
 --- !u!65 &525698770
 BoxCollider:
   m_ObjectHideFlags: 0
